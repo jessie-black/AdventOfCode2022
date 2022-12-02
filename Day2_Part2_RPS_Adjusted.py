@@ -9,35 +9,23 @@ file_path = 'day2_input.txt' # strategy guide
 total_score = 0
 with open(file_path) as input_file:
     for line in input_file:
-        selection_score = 0
         opponents_selection=line[0]
         outcome=line[2]
-        if outcome=="X": # I need to lose
-            selection_score = 0
-            if opponents_selection=="A": # and opponent selects rock
-                selection_score = selection_score + 3 # I need to select scissors
-            elif opponents_selection=="B": # and opponent selects paper
-                selection_score = selection_score + 1 # I need to select rock
-            else: # and opponent selects scissors
-                selection_score = selection_score + 2 # I need to select paper
+        if outcome=="X": # lose
+            if opponents_selection=="A": total_score+=3 # scissors
+            elif opponents_selection=="B": total_score+=1 #rock
+            else: total_score+=2 #paper
 
-        elif outcome=="Y": # I need to tie
-            selection_score = 3
-            if opponents_selection=="A": # and opponent selects rock
-                selection_score = selection_score + 1 # rock
-            elif opponents_selection=="B": # and opponent selects paper
-                selection_score = selection_score + 2 # paper
-            else: # and opponent selects scissors
-                selection_score = selection_score + 3 # scissors
+        elif outcome=="Y": # draw
+            total_score+=3
+            if opponents_selection=="A": total_score +=1 # rock
+            elif opponents_selection=="B":total_score +=2 # paper
+            else: total_score +=3 # scissors
 
         else:   # I need to win
-            selection_score = 6
-            if opponents_selection=="A": # and opponent selects rock
-                selection_score = selection_score + 2 # paper
-            elif opponents_selection=="B": # and opponent selects paper
-                selection_score = selection_score + 3 # scissors
-            else: # and opponent selects scissors
-                selection_score = selection_score + 1 # rock
-        total_score = total_score + selection_score
-        print("This round:", selection_score)
-        print("Running score:",total_score)
+            total_score += 6
+            if opponents_selection=="A":total_score +=2 # paper
+            elif opponents_selection=="B": total_score +=3 # scissors
+            else: total_score +=1 # rock
+
+    print("Final score:",total_score)
