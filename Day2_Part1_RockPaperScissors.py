@@ -28,4 +28,4 @@ with open(file_path) as input_file:
             if opponents_selection=="A": total_score+= 0 # loss
             elif opponents_selection=="B": total_score+= 6 # win
             else: total_score+= 3 # draw
-        print("Final score:",total_score)
+    print("Final score:",total_score)
