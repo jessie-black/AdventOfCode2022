@@ -9,35 +9,23 @@ file_path = 'day2_input.txt' # strategy guide
 total_score = 0
 with open(file_path) as input_file:
     for line in input_file:
-        selection_score = 0
         opponents_selection=line[0]
         my_selection=line[2] #space between letters skipped
         if my_selection=="X": #If I select rock
-            selection_score = 1
-            if opponents_selection=="A": # and opponent selects rock
-                selection_score = selection_score + 3 # draw
-            elif opponents_selection=="B": # and opponent selects paper
-                selection_score = selection_score + 0 # loss
-            else: # and opponent selects scissors: win
-                selection_score = selection_score + 6 # win
+            total_score+= 1
+            if opponents_selection=="A": total_score+= 3 # draw
+            elif opponents_selection=="B": total_score+= 0 # loss
+            else: total_score+= 6# win
 
         elif my_selection=="Y": # if I select paper
-            selection_score = 2
-            if opponents_selection=="A": # and opponent selects rock
-                selection_score = selection_score + 6 # win
-            elif opponents_selection=="B": # and opponent selects paper
-                selection_score = selection_score + 3 # draw
-            else: # and opponent selects scissors
-                selection_score = selection_score + 0 # lose
+            total_score+= 2
+            if opponents_selection=="A": total_score+= 6 # win
+            elif opponents_selection=="B": total_score+= 3 # draw
+            else: total_score+= 0 # lose
 
         else:   # if I select scissors
-            selection_score = 3
-            if opponents_selection=="A": # and opponent selects rock
-                selection_score = selection_score + 0 # loss
-            elif opponents_selection=="B": # and opponent selects paper
-                selection_score = selection_score + 6 # win
-            else: # and opponent selects scissors
-                selection_score = selection_score + 3 # draw
-        total_score = total_score + selection_score
-        print("This round:", selection_score)
-        print("Running score:",total_score)
+            total_score+= 3
+            if opponents_selection=="A": total_score+= 0 # loss
+            elif opponents_selection=="B": total_score+= 6 # win
+            else: total_score+= 3 # draw
+        print("Final score:",total_score)
