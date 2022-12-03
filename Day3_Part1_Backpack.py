@@ -1,6 +1,3 @@
-# Every backpack has 2 large components
-# All items of a given type go into exactly 1 component
-# One item type did not have this rule followed
 # Input = list of all items currently in each backpack
 # Items are identified by single (case-sensitive) letter
 # List of items for each backpack is given as characters on a single line
@@ -71,11 +68,6 @@ with open(file_path) as input_file:
         length = len(line) #get full length of string
         for char in line:
             if char in line[length//2:length]: # if a character exists in second half
-                print("The duplicate character in",line,"is",char)
                 total_sum+=priority[char]
-                break #go to next line
-        # Read each line
-        # find which character appears in first AND second half
-        # Find its corresponding priority
-        # Add it to total sum
+                break
 print(total_sum)
