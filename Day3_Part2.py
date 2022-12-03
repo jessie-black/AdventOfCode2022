@@ -1,4 +1,4 @@
-# A group of 3 will have one letter in common. this is their badge
+# A group of 3 lines will have one letter in common. this is their badge
 # what is sum of priorities of badges.
 
 file_path = 'day3_input.txt' # backpack contents
@@ -62,12 +62,9 @@ end=3
 with open(file_path) as input_file:
     all_elves = input_file.readlines()
     for i in range(len(all_elves)//3):
+        # because the code examines 3 lines per loop, we only need to loop (total number of lines divided by 3) times.
         for char in all_elves[start]:
             if char in all_elves[start+1] and char in all_elves[start+2]:
-                print("The badge item in group", i, "is", char)
-                print(all_elves[start])
-                print(all_elves[start+1])
-                print(all_elves[start+2])
                 total_sum += priority[char]
                 start+=3
                 break
