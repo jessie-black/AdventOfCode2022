@@ -1,28 +1,19 @@
-# ID numbers overlap
-#
-# In how many assignment pairs does one range fully contain the other?
-
-
-file_path = 'day4_input.txt' # backpack contents
+# Each line has a set of integer ranges in the form a-b,c-d where a<=b and c<=d
+# In how many sets does one set overlap with the other (partially or fully)?
+file_path = 'day4_input.txt' # list of sets
 total_sum = 0 #counter
 with open(file_path) as input_file:
     for line in input_file:
-        split_string = line.split(',')
-        first_range = split_string[0].split('-')
-        second_range = split_string[1].strip().split('-')
+        split_string = line.split(',') # divide into 2 sets of ranges like ["a-b",'c-d\n"]
+        first_range = split_string[0].split('-')    #split the first set into separate integers like ['a','b'])
+        second_range = split_string[1].strip().split('-')   # split the second set and get rid of newline like ['c','d']
+        #Convert all remaining values from character to integer format
         first_range[0] = int(first_range[0])
         first_range[1] = int(first_range[1])
         second_range[0] = int(second_range[0])
         second_range[1] = int(second_range[1])
-        print("Line is:",line.strip())
-        print("Split string is:", split_string)
-        print("First_range is:", first_range)
-        print("Second range is:", second_range)
         if first_range[0] <= second_range[1] and first_range[1] >= second_range[0]:
             total_sum+=1
-            print("The first range is partially contained the second")
         elif second_range[0] <= first_range[1] and second_range[1] >= first_range[0]:
             total_sum+= 1
-            print("The second range partially contained in the first")
-
 print(total_sum)
