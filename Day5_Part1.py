@@ -9,7 +9,6 @@ for i in range(8): # traverse stacks from bottom to top line by line to populate
     for j in range(9):
         if original_stacks[7-i][(j*4)+1]!=" ":
             stacks[j+1].append(original_stacks[7-i][(j*4)+1])
-# All stacks now represented in list form
 
 # Starting at line 10, read all instructions for movement between stacks
 for i in range(len(original_stacks)-10):
@@ -20,5 +19,6 @@ for i in range(len(original_stacks)-10):
     destination=int(current_instruction[5]) #to destination stack
     for i in range(number):
         stacks[destination].append(stacks[origin].pop())
+
 for i in range(9): #get top item from each stack
     print(stacks[i+1].pop(),end="")
