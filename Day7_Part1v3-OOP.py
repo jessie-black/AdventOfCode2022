@@ -54,34 +54,22 @@ class Dir():
         for child in self.children:
             print(child.getName(),child.getSize(),"(directory)" if child.isDir() else "(file)")
 
-    def listDirectories(self):
-        for child in self.children:
-            if child.isDir():
-                print(child.getName())
-    def numberOfDirectories(self):
-        count=0
-        for child in self.children:
-            if child.isDir():
-                count+=1
-        return count
-    def numberOfFiles(self):
-        count=0
-        for child in self.children:
-            if not child.isDir():
-                count+=1
-        return count
-    def listFiles(self):
-        for child in self.children:
-            if not child.isDir():
-                print(child.getName())
+    def findSmallDirectories(self):
+        total=0
+        for item in self.children:
+            if item.isDir():
+                if item.getSize()<=100000:
+                    total+=item.getSize()
+                total+=item.findSmallDirectories()
+        return total
 
 def cd(line,current_directory):
     target = line[5:].strip()  # get destination directory (or command)
     if target == "..":
-        print("move up")
+        #print("move up")
         target_directory = current_directory.getParent()
     else:
-        print("move to",target)
+        #print("move to",target)
         target_directory = current_directory.getChild(target)
     return target_directory
     #print("Current directory:",current_directory.getName())
@@ -94,7 +82,7 @@ def ls(source,index,line,current_directory):
         line = line.strip()
         if line[0:3]=="dir":
             name = line[4:]
-            print("Adding directory",name,"to",current_directory.getName())
+            #print("Adding directory",name,"to",current_directory.getName())
             new_directory = Dir(name,parent=current_directory)
             current_directory.addDir(new_directory)
         else:
@@ -103,7 +91,7 @@ def ls(source,index,line,current_directory):
             name=line[1]
             new_file = File(name,size) #create new file of name line[1] and size line[0]
             current_directory.addFile(new_file)
-            print("Adding new file called",new_file.getName(),"of size",new_file.getSize())
+            #print("Adding new file called",new_file.getName(),"of size",new_file.getSize())
         if i == limit - 1: break # avoid index out of bounds issue
         i+=1
         line=source[i]
@@ -134,12 +122,12 @@ def main():
             line,current_directory = parse_command(all_output,i,line,current_directory)
 
     #get answer....
-    #
-    #print(current_directory.calculateSize())
-    #current_directory.listDirectories()
+    print(root.calculateSize()) #get sizes for all directories, recursively.
+    print(root.listAllChildren())
     #current_directory.listFiles()
     #print(current_directory.numberOfDirectories())
     #print(current_directory.numberOfFiles())
+    print(root.findSmallDirectories())
 
 if __name__ == "__main__":
     main()
