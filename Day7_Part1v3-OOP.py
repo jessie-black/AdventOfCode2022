@@ -62,34 +62,26 @@ class Dir():
                     total+=item.getSize()
                 total+=item.findSmallDirectories()
         return total
-##STUCK ON THIS...
-    def findDirectory(self,target_size,best_so_far):
-        closest_size=best_so_far
-        print("Best so far:",closest_size)
-        for item in self.children:
-            print("checking",item.getName())
-            if item.isDir(): #for all directories
-                this_size = item.getSize()
-                print("Current directory's size:",item.getSize())
-                if this_size>=target_size and item.getSize()< closest_size:
-                    closest_size = this_size
-                    print("New best:",this_size)
-                if len(item.children)>0:
-                    print("checking",len(item.children),"children")
-                    closest_size = item.findDirectory(target_size,closest_size)
-                else:
-                    return closest_size
+
+    def matchSize(self,target_size):
+        best = 7000000
+        for child in self.children:
+            if child.isDir():
+                size = child.getSize()
+                if size>=target_size and size <= best:
+                    best = size
+                child_size=child.matchSize(target_size)
+                if child_size>=target_size and child_size <= best:
+                    best = child_size
+        return best
 
 def cd(line,current_directory):
     target = line[5:].strip()  # get destination directory (or command)
     if target == "..":
-        #print("move up")
         target_directory = current_directory.getParent()
     else:
-        #print("move to",target)
         target_directory = current_directory.getChild(target)
     return target_directory
-    #print("Current directory:",current_directory.getName())
 
 def ls(source,index,line,current_directory):
     i=index+1
@@ -99,7 +91,6 @@ def ls(source,index,line,current_directory):
         line = line.strip()
         if line[0:3]=="dir":
             name = line[4:]
-            #print("Adding directory",name,"to",current_directory.getName())
             new_directory = Dir(name,parent=current_directory)
             current_directory.addDir(new_directory)
         else:
@@ -108,12 +99,9 @@ def ls(source,index,line,current_directory):
             name=line[1]
             new_file = File(name,size) #create new file of name line[1] and size line[0]
             current_directory.addFile(new_file)
-            #print("Adding new file called",new_file.getName(),"of size",new_file.getSize())
         if i == limit - 1: break # avoid index out of bounds issue
         i+=1
         line=source[i]
-        #print("CURRENT FOLDER'S CONTENTS:")
-        #current_directory.listAllChildren()
     return i
 
 def parse_command(source,index,line,current_directory):
@@ -143,9 +131,11 @@ def main():
     print(root.findSmallDirectories()) #print the total sum of all directories of size 100,000 or less
 
     # Part 2
-    need_to_free = 70000000 - total_space_used
+    print(total_space_used)
+    currently_free = 70000000 - total_space_used
+    need_to_free = 30000000 - currently_free
     print("Space we need to free:",need_to_free)
-    print(root.findDirectory(need_to_free,70000000))
+    print(root.matchSize(need_to_free))
 
 
 if __name__ == "__main__":
