@@ -9,6 +9,9 @@ class File():
     def getName(self):
         return self.name
 
+    def isDir(self):
+        return False
+
 class Dir():
     def __init__(self, name,parent):
         self.name = name
@@ -39,17 +42,48 @@ class Dir():
 
     def calculateSize(self): #sum sizes of children and update size to reflect value
         for item in self.children:
-            self.size += item.getSize()
+            if item.isDir():
+                self.size += item.calculateSize()
+            else: self.size += item.getSize()
+        return self.size
 
+    def isDir(self):
+        return True
+
+    def listAllChildren(self):
+        for child in self.children:
+            print(child.getName(),child.getSize(),"(directory)" if child.isDir() else "(file)")
+
+    def listDirectories(self):
+        for child in self.children:
+            if child.isDir():
+                print(child.getName())
+    def numberOfDirectories(self):
+        count=0
+        for child in self.children:
+            if child.isDir():
+                count+=1
+        return count
+    def numberOfFiles(self):
+        count=0
+        for child in self.children:
+            if not child.isDir():
+                count+=1
+        return count
+    def listFiles(self):
+        for child in self.children:
+            if not child.isDir():
+                print(child.getName())
 
 def cd(line,current_directory):
     target = line[5:].strip()  # get destination directory (or command)
     if target == "..":
         print("move up")
-        current_directory = current_directory.getParent()
+        target_directory = current_directory.getParent()
     else:
         print("move to",target)
-        current_directory = current_directory.getChild(target)
+        target_directory = current_directory.getChild(target)
+    return target_directory
     #print("Current directory:",current_directory.getName())
 
 def ls(source,index,line,current_directory):
@@ -60,12 +94,12 @@ def ls(source,index,line,current_directory):
         line = line.strip()
         if line[0:3]=="dir":
             name = line[4:]
-            print("Adding directory",name)
+            print("Adding directory",name,"to",current_directory.getName())
             new_directory = Dir(name,parent=current_directory)
             current_directory.addDir(new_directory)
         else:
             line = line.split()
-            size=line[0]
+            size=int(line[0])
             name=line[1]
             new_file = File(name,size) #create new file of name line[1] and size line[0]
             current_directory.addFile(new_file)
@@ -73,44 +107,39 @@ def ls(source,index,line,current_directory):
         if i == limit - 1: break # avoid index out of bounds issue
         i+=1
         line=source[i]
+        #print("CURRENT FOLDER'S CONTENTS:")
+        #current_directory.listAllChildren()
     return i
 
 def parse_command(source,index,line,current_directory):
     if "cd" in line:
-        cd(line,current_directory)
-        return index+1
-    elif "ls" in line:
-        return ls(source,index,line,current_directory)
+        return index+1, cd(line, current_directory)
     else:
-        print("Error - command neither cd nor ls")
+        return ls(source,index,line,current_directory),current_directory
 
 def main():
-    root = Dir("root",None) # create root directory        ## <-- NOT SURE IF NEED TO ADJUST
-    current_directory = root
+    root = Dir("root",None) # create root directory (with no parent)
+    current_directory = root #point to root directory
 
+    #Read input file
     file_path = 'day7_input.txt'  # terminal output
     with open(file_path) as input_file:
         all_output = input_file.readlines()  # read all terminal output
         all_output = all_output[1:]  # skip first line -- simply sets to root directory; redundant.
 
+    #Model file system based on input
     for i in range(len(all_output)):  # parse rest of commands.
         line = all_output[i]  # get current line
         if line[0]=="$":
-            line = parse_command(all_output,i,line,current_directory)
-        elif line[0:4] == "$ ls":
-            nextindex = i + 1
-            while (all_output[nextindex][0] != "$"):  # until the next command
-                line = all_output[nextindex]  # add contents
-                if line[0:3] == "dir":
-                    print("I found a directory called", line[4:].strip())
-                else:
-                    line = line.split()
-                    filesize = line[0]
-                    filename = line[1].strip()
-                    print("I found a file called", filename, "of size", filesize)
-                    #file_system[current_filepath][filename] = filesize
-                nextindex += 1
+            line,current_directory = parse_command(all_output,i,line,current_directory)
 
+    #get answer....
+    #
+    #print(current_directory.calculateSize())
+    #current_directory.listDirectories()
+    #current_directory.listFiles()
+    #print(current_directory.numberOfDirectories())
+    #print(current_directory.numberOfFiles())
 
 if __name__ == "__main__":
     main()
