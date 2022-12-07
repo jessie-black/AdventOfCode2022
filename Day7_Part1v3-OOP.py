@@ -62,6 +62,23 @@ class Dir():
                     total+=item.getSize()
                 total+=item.findSmallDirectories()
         return total
+##STUCK ON THIS...
+    def findDirectory(self,target_size,best_so_far):
+        closest_size=best_so_far
+        print("Best so far:",closest_size)
+        for item in self.children:
+            print("checking",item.getName())
+            if item.isDir(): #for all directories
+                this_size = item.getSize()
+                print("Current directory's size:",item.getSize())
+                if this_size>=target_size and item.getSize()< closest_size:
+                    closest_size = this_size
+                    print("New best:",this_size)
+                if len(item.children)>0:
+                    print("checking",len(item.children),"children")
+                    closest_size = item.findDirectory(target_size,closest_size)
+                else:
+                    return closest_size
 
 def cd(line,current_directory):
     target = line[5:].strip()  # get destination directory (or command)
@@ -121,13 +138,15 @@ def main():
         if line[0]=="$":
             line,current_directory = parse_command(all_output,i,line,current_directory)
 
-    #get answer....
-    print(root.calculateSize()) #get sizes for all directories, recursively.
-    print(root.listAllChildren())
-    #current_directory.listFiles()
-    #print(current_directory.numberOfDirectories())
-    #print(current_directory.numberOfFiles())
-    print(root.findSmallDirectories())
+    # Okay, time to figure out the solution to part 1...
+    total_space_used = root.calculateSize() #get sizes for all directories, recursively.
+    print(root.findSmallDirectories()) #print the total sum of all directories of size 100,000 or less
+
+    # Part 2
+    need_to_free = 70000000 - total_space_used
+    print("Space we need to free:",need_to_free)
+    print(root.findDirectory(need_to_free,70000000))
+
 
 if __name__ == "__main__":
     main()
