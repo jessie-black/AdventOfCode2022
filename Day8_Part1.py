@@ -2,8 +2,6 @@
 # visible: if all other trees between it and an edge are shorter
 # Only consider interior 9
 
-
-
 # HOW MANY TREES ARE VISIBLE FROM OUTSIDE?
 
 def visible_from_left(row,column,this_tree):
@@ -12,23 +10,31 @@ def visible_from_left(row,column,this_tree):
         return True
     return False
 
+
 def visible_from_right(row,column, this_tree):
     tallest_trees_on_right = max(forest_array[row][column + 1:])
     if this_tree > tallest_trees_on_right:
         return True
     return False
 
+
 def visible_from_top(row,column, this_tree):
-    for i in range(row):
-        if forest_array[i][column] >= this_tree:
+    for r in range(row):
+        if forest_array[r][column] >= this_tree:
             return False
     return True
 
-def visible_from_bottom(row,column, this_tree):
-    for i in range(height,row+1):
-        if forest_array[i][column] >= this_tree:
+
+def visible_from_bottom(row,column,this_tree):
+    #print("This tree's height is",this_tree)
+    #print("Height",height,"row",row)
+    diff = height - row
+    #print("Diff",diff)
+    for r in range(1,diff):
+        if forest_array[row+r][column] >= this_tree:
             return False
     return True
+
 
 file_path = 'day8_input.txt'  # tree heights
 with open(file_path) as input_file:
@@ -44,17 +50,18 @@ for row in range(height):
         new_row[i] = int(new_row[i])
     forest_array.append(new_row)
 
-#print(forest_array)
+# print(forest_array)
 for row in range(1,height-1):
     for column in range(1,width-1):
         this_tree = forest_array[row][column] # get current tree's height
-
-
+        #if visible_from_bottom(row, column, this_tree):
+        #    print("I can see the tree in row", row, ", column", column, "of height", forest_array[row][column])
         if (visible_from_left(row, column, this_tree) or
             visible_from_right(row, column, this_tree) or
             visible_from_top(row,column,this_tree) or
             visible_from_bottom(row, column, this_tree)):
             visible_trees+=1
+#print("total trees:",width*height)
 print(visible_trees)
             #print("I can see tree [",row,"][",column,"] of height",this_tree)
     #if visible_from_left(1,column):
