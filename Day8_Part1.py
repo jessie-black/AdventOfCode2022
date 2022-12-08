@@ -1,9 +1,5 @@
-#Puzzle input = height of each tree, each tree = single digit integer 0-9 (0 is a short tree, not an empty space)
-# visible: if all other trees between it and an edge are shorter
-# Only consider interior 9
-
-# HOW MANY TREES ARE VISIBLE FROM OUTSIDE?
-
+# Given a grid of single-digit integer values representing heights of trees in a forest,
+# HOW MANY TREES ARE VISIBLE FROM AT LEAST ONE SIDE?
 def visible_from_left(row,column,this_tree):
     tallest_trees_on_left = max(forest_array[row][0:column])
     if this_tree > tallest_trees_on_left:
@@ -26,10 +22,7 @@ def visible_from_top(row,column, this_tree):
 
 
 def visible_from_bottom(row,column,this_tree):
-    #print("This tree's height is",this_tree)
-    #print("Height",height,"row",row)
     diff = height - row
-    #print("Diff",diff)
     for r in range(1,diff):
         if forest_array[row+r][column] >= this_tree:
             return False
@@ -54,33 +47,9 @@ for row in range(height):
 for row in range(1,height-1):
     for column in range(1,width-1):
         this_tree = forest_array[row][column] # get current tree's height
-        #if visible_from_bottom(row, column, this_tree):
-        #    print("I can see the tree in row", row, ", column", column, "of height", forest_array[row][column])
         if (visible_from_left(row, column, this_tree) or
             visible_from_right(row, column, this_tree) or
             visible_from_top(row,column,this_tree) or
             visible_from_bottom(row, column, this_tree)):
-            visible_trees+=1
-#print("total trees:",width*height)
+            visible_trees+=1 # if tree is visible from any direction, increase count
 print(visible_trees)
-            #print("I can see tree [",row,"][",column,"] of height",this_tree)
-    #if visible_from_left(1,column):
-    #    print("I can see the tree in row","1",", column",column,"of height",forest_array[1][column])
-    #if visible_from_right(1,column):
-    #    print("I can see the tree in row","1",", column",column,"of height",forest_array[1][column])
-
-#inner_forest=[]
-#for row in range(height-2): #skipping top and bottom rows
-#    row_of_trees = list(forest[row+1].strip()[1:-1]) # list of trees, each element is a single tree, excluding line break and excluding first and last trees
-#    inner_forest.append(row_of_trees)
-
-
-#for column in range(width-2):
-#        if visible_from_left(row+1,column+1)
-#    print(row_of_trees)
-    #for column in range(width-2):#skip outer columns
-    #    tree = (int(forest[current_row][column+1])
-    #    if visible_from_left(current_row, column + 1, tree):
-     #       print("I can see the tree in row",current_row,", column",column+1,"of height",tree)
-        #if visible_from_right(current_row,column+1,tree):
-            #print("I can see the tree in row",row+1,", column",column+1,"of height",tree)
